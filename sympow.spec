@@ -11,6 +11,7 @@ Source:		http://www.maths.bris.ac.uk/~mamjw/sympow.src.tar.bz2
 URL:		http://www.maths.bris.ac.uk/~mamjw/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
+BuildRequires:	pari
 Requires:	pari
 
 Patch0:		sympow-1.019-datafiles.patch

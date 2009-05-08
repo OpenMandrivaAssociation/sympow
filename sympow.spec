@@ -6,7 +6,7 @@ Group:		Sciences/Mathematics
 License:	BSDish
 Summary:	Compute special values of symmetric power elliptic curve L-functions
 Version:	1.019
-Release:	%mkrel 1
+Release:	%mkrel 2
 Source:		http://www.maths.bris.ac.uk/~mamjw/sympow.src.tar.bz2
 URL:		http://www.maths.bris.ac.uk/~mamjw/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot

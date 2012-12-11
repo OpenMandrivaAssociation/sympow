@@ -71,3 +71,18 @@ rm -rf %{buildroot}
 %{_bindir}/%{name}
 %dir %{sympowdir}
 %{sympowdir}/*
+
+
+%changelog
+* Fri Sep 04 2009 Paulo Andrade <pcpa@mandriva.com.br> 1.019-3mdv2010.0
++ Revision: 429047
+- correct problems due to sympow needing to write data files
+- add sagemath sympow data files to package
+
+* Sat Mar 28 2009 Paulo Andrade <pcpa@mandriva.com.br> 1.019-1mdv2009.1
++ Revision: 361797
+- Initial import of sympow version 1.019.
+  Compute special values of symmetric power elliptic curve L-functions
+  http://www.maths.bris.ac.uk/~mamjw/
+- sympow
+

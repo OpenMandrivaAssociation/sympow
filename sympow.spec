@@ -1,45 +1,51 @@
-%define name		sympow
-%define	sympowdir	%{_datadir}/%{name}
+%global         sympowdir                %{_libdir}/%{name}
 
-Name:		%{name}
-Group:		Sciences/Mathematics
-License:	BSDish
-Summary:	Compute special values of symmetric power elliptic curve L-functions
-Version:	1.019
-Release:	%mkrel 3
-Source:		http://www.maths.bris.ac.uk/~mamjw/sympow.src.tar.bz2
-# sagemath sympow datafiles
-Source1:	datafiles.tar.bz2
-URL:		http://www.maths.bris.ac.uk/~mamjw/
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Name:           sympow
+Version:        1.019
+Release:        4%{?dist}
+Summary:        Special Values of Symmetric Power Elliptic Curve L-Functions
+License:        BSD
+URL:            http://www.maths.bris.ac.uk/~mamjw/
+Source0:        http://www.maths.bris.ac.uk/~mamjw/sympow.tar.bz2
+Source1:        sympow-README.Fedora
+Patch0:         sympow-1.019-datafiles.patch
+BuildRequires:  pari
 
-BuildRequires:	pari
-Requires:	pari
-
-Patch0:		sympow-1.019-datafiles.patch
 
 %description
-SYMPOW is a package to compute special values of symmetric power elliptic
-curve L-functions. It can compute up to about 64 digits of precision.
+SYMPOW is a program for computing special values of symmetric power
+elliptic curve L-functions.
+
 
 %prep
 %setup -q -n SYMPOW-%{version}
+cp -p %{SOURCE1} README.Fedora
+%patch0 -p1
 
-%patch0	-p1
-
-perl -pi							\
-	-e 's|"new_data"|"%{_datadir}/%{name}/bin/new_data"|;'	\
-	-e 's|(standard.\.gp)|%{sympowdir}/$1|g;'		\
-	generate.c
+sed \
+    -e 's|"new_data"|"%{sympowdir}/new_data"|' \
+    -e 's|\(standard.\.gp\)|%{sympowdir}/\1|g' \
+    -i generate.c
 
 %build
+export CFLAGS="%{optflags}"
 sh Configure
-make
+make %{?_smp_mflags}
+
 
 %install
-mkdir -p %{buildroot}%{_bindir}
+mkdir -p $RPM_BUILD_ROOT%{sympowdir}/datafiles
+# executables
+install -m 755 %{name} $RPM_BUILD_ROOT%{sympowdir}/
+install -m 755 new_data $RPM_BUILD_ROOT%{sympowdir}/
+# datafiles
+install -m 644 datafiles/* $RPM_BUILD_ROOT%{sympowdir}/datafiles/
+# more datafiles
+install -m 644 *.gp $RPM_BUILD_ROOT%{sympowdir}/
 
-cat > %{buildroot}%{_bindir}/%{name} << EOF
+# launcher script
+mkdir -p $RPM_BUILD_ROOT%{_bindir}
+cat > $RPM_BUILD_ROOT%{_bindir}/%{name} << EOF
 #!/bin/sh
 
 SYMPOW_DATA=%{sympowdir}/datafiles
@@ -53,36 +59,11 @@ else
     cd %{sympowdir}
 fi
 
-exec %{sympowdir}/bin/%{name} "\$@"
+exec %{sympowdir}/%{name} "\$@"
 EOF
-chmod +x %{buildroot}%{_bindir}/%{name}
-
-mkdir -p %{buildroot}%{sympowdir}/bin
-cp -fa %{name} %{buildroot}%{sympowdir}/bin
-cp -fa new_data %{buildroot}%{sympowdir}/bin
-cp -fa standard?.gp %{buildroot}%{sympowdir}
-tar jxf %{SOURCE1} -C %{buildroot}%{sympowdir}
-
-%clean
-rm -rf %{buildroot}
+chmod +x $RPM_BUILD_ROOT%{_bindir}/%{name}
 
 %files
-%defattr(-,root,root)
+%doc README COPYING README.Fedora
 %{_bindir}/%{name}
-%dir %{sympowdir}
-%{sympowdir}/*
-
-
-%changelog
-* Fri Sep 04 2009 Paulo Andrade <pcpa@mandriva.com.br> 1.019-3mdv2010.0
-+ Revision: 429047
-- correct problems due to sympow needing to write data files
-- add sagemath sympow data files to package
-
-* Sat Mar 28 2009 Paulo Andrade <pcpa@mandriva.com.br> 1.019-1mdv2009.1
-+ Revision: 361797
-- Initial import of sympow version 1.019.
-  Compute special values of symmetric power elliptic curve L-functions
-  http://www.maths.bris.ac.uk/~mamjw/
-- sympow
-
+%{_libdir}/%{name}

@@ -5,7 +5,7 @@ Version:        1.019
 Release:        4%{?dist}
 Summary:        Special Values of Symmetric Power Elliptic Curve L-Functions
 License:        BSD
-URL:            http://www.maths.bris.ac.uk/~mamjw/
+URL:            https://www.maths.bris.ac.uk/~mamjw/
 Source0:        http://www.maths.bris.ac.uk/~mamjw/sympow.tar.bz2
 Source1:        sympow-README.Fedora
 Patch0:         sympow-1.019-datafiles.patch
